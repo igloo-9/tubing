@@ -16,7 +16,7 @@ app.get("/download", async (req, res) => {
 
   try {
     const now = new Date().toLocaleString();
-    console.log(`[${now}] Downloading video: ${url}`);
+    console.log(`[server] (${now}) Downloading video: ${url}`);
 
     res.setHeader("Content-Disposition", 'attachment; filename="video.mp4"');
     res.setHeader("Content-Type", "video/mp4");
@@ -25,7 +25,7 @@ app.get("/download", async (req, res) => {
       .pipe(res)
       .on("finish", () => {
         const finishedNow = new Date().toLocaleString();
-        console.log(`[${finishedNow}] Downloaded video: ${url}`);
+        console.log(`[server] (${finishedNow}) Downloaded video: ${url}`);
       });
   } catch (error) {
     console.error("Error fetching video:", error);
@@ -36,5 +36,5 @@ app.get("/download", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`[server] Running on http://localhost:${port}`);
 });
