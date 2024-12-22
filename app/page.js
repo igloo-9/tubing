@@ -6,6 +6,35 @@ import { useState } from "react";
 export default function Home() {
   const [link, setLink] = useState("");
 
+  const handleDownload = async () => {
+    if (!link) {
+      alert("Please enter a valid link");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/download?url=${encodeURIComponent(link)}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to download video");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      a.download = "video.mp4";
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading video:", error);
+      alert("Error downloading video");
+    }
+  };
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -57,7 +86,7 @@ export default function Home() {
           </a>
         </div> */}
 
-        <div>
+        <div className="flex gap-4 items-center flex-col sm:flex-row">
           <label className="sr-only" htmlFor="link">
             YouTube link
           </label>
@@ -69,6 +98,12 @@ export default function Home() {
             value={link}
             onChange={(e) => setLink(e.target.value)}
           />
+          <button
+            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
+            onClick={handleDownload}
+          >
+            Download
+          </button>
         </div>
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
