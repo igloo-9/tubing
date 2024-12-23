@@ -29,6 +29,8 @@ export default function Home() {
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
+
+      setLink("");
     } catch (error) {
       console.error("Error downloading video:", error);
       alert("Error downloading video");
