@@ -58,15 +58,15 @@ export default function Home() {
         /> */}
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2">
-            Copy YouTube link and paste it below.{" "}
+            Please read the disclaimer before using this service.
             {/* <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
               app/page.js
             </code>
             . */}
           </li>
           <li>
-            Choose the desired specification to download when the processing is
-            ready.
+            Choosing the desired specification of the video to download when the
+            processing is ready.
           </li>
         </ol>
 
@@ -189,12 +189,27 @@ export default function Home() {
         >
           <Image
             aria-hidden
+            src="/window.svg"
+            alt="Window icon"
+            width={16}
+            height={16}
+          />
+          Code
+        </a>
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href=""
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
             src="/file.svg"
             alt="File icon"
             width={16}
             height={16}
           />
-          Code
+          Disclaimer
         </a>
       </footer>
     </div>
