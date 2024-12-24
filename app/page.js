@@ -5,12 +5,18 @@ import { useState } from "react";
 
 export default function Home() {
   const [link, setLink] = useState("");
+  const [downloading, setDownloading] = useState(false);
+
+  const downloadButtonStyle =
+    "rounded-lg border border-solid flex items-center justify-center text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44";
 
   const handleDownload = async () => {
     if (!link) {
       alert("Please enter a valid link");
       return;
     }
+
+    setDownloading(true);
 
     try {
       const response = await fetch(
@@ -34,6 +40,8 @@ export default function Home() {
     } catch (error) {
       console.error("Error downloading video:", error);
       alert("Error downloading video");
+    } finally {
+      setDownloading(false);
     }
   };
 
@@ -100,12 +108,27 @@ export default function Home() {
             value={link}
             onChange={(e) => setLink(e.target.value)}
           />
-          <button
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            onClick={handleDownload}
-          >
-            Download
-          </button>
+          {!downloading ? (
+            <button
+              className={
+                downloadButtonStyle +
+                "border-transparent transition-colors bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc]"
+              }
+              onClick={handleDownload}
+            >
+              Download
+            </button>
+          ) : (
+            <button
+              className={
+                downloadButtonStyle +
+                "border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent"
+              }
+              onClick={handleDownload}
+            >
+              Just a moment...
+            </button>
+          )}
         </div>
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
