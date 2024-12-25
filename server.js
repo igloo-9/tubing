@@ -103,6 +103,8 @@ app.get("/specificdownload", async (req, res) => {
     );
     res.setHeader("Content-Type", "video/" + extension);
 
+    // use stringified format object to leverage speed
+    // using format object signifanctly slow down the download process
     ytdl(url, { format: format })
       .pipe(res)
       .on("finish", () => {
