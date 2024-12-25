@@ -84,8 +84,9 @@ app.get("/info", async (req, res) => {
 
 app.get("/specificdownload", async (req, res) => {
   const { url, format } = req.query;
+  const formatObj = JSON.parse(format);
 
-  if (!url || !format) {
+  if (!format) {
     return res.status(400).json({ error: "URL and format are required" });
   }
 
@@ -95,19 +96,12 @@ app.get("/specificdownload", async (req, res) => {
       `[server] (${now}) Downloading video: ${url} in format: ${format}`
     );
 
-    const info = await ytdl.getInfo(url);
-    const selectedFormat = info.formats.find((f) => f.url === format);
-
-    if (!selectedFormat) {
-      return res.status(400).json({ error: "Invalid format" });
-    }
-
-    const extension = selectedFormat.container || "mp4";
+    const extension = formatObj.container;
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="video.${extension}"`
+      `attachment; filename="video.` + extension + `"`
     );
-    res.setHeader("Content-Type", `video/${extension}`);
+    res.setHeader("Content-Type", "video/" + extension);
 
     ytdl(url, { format: format })
       .pipe(res)
