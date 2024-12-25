@@ -35,6 +35,94 @@ app.get("/download", async (req, res) => {
   }
 });
 
+app.get("/info", async (req, res) => {
+  const { url } = req.query;
+
+  if (!url) {
+    return res.status(400).json({ error: "URL is required" });
+  }
+
+  try {
+    const info = await ytdl.getInfo(url);
+    const formats = info.formats.filter((format) => format.qualityLabel);
+
+    const uniqueFormats = Array.from(
+      new Set(
+        formats.map(
+          (format) =>
+            `${format.qualityLabel}-${
+              format.container
+            }-${!!format.audioBitrate}`
+        )
+      )
+    ).map((key) => {
+      const [quality, container, hasAudio] = key.split("-");
+      return formats.find(
+        (format) =>
+          format.qualityLabel === quality &&
+          format.container === container &&
+          !!format.audioBitrate === (hasAudio === "true")
+      );
+    });
+
+    const formatOptions = uniqueFormats.map((format) => ({
+      quality: format.qualityLabel,
+      container: format.container,
+      audioBitrate: format.audioBitrate,
+      hasAudio: !!format.audioBitrate,
+      url: format.url,
+    }));
+
+    res.json(formatOptions);
+  } catch (error) {
+    console.error("Error fetching video info:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
+app.get("/specificdownload", async (req, res) => {
+  const { url, format } = req.query;
+
+  if (!url || !format) {
+    return res.status(400).json({ error: "URL and format are required" });
+  }
+
+  try {
+    const now = new Date().toLocaleString();
+    console.log(
+      `[server] (${now}) Downloading video: ${url} in format: ${format}`
+    );
+
+    const info = await ytdl.getInfo(url);
+    const selectedFormat = info.formats.find((f) => f.url === format);
+
+    if (!selectedFormat) {
+      return res.status(400).json({ error: "Invalid format" });
+    }
+
+    const extension = selectedFormat.container || "mp4";
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="video.${extension}"`
+    );
+    res.setHeader("Content-Type", `video/${extension}`);
+
+    ytdl(url, { format: format })
+      .pipe(res)
+      .on("finish", () => {
+        const finishedNow = new Date().toLocaleString();
+        console.log(`[server] (${finishedNow}) Downloaded video: ${url}`);
+      });
+  } catch (error) {
+    console.error("Error fetching video:", error);
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
+});
+
 app.listen(port, () => {
   console.log(`[server] Running on http://localhost:${port}`);
 });

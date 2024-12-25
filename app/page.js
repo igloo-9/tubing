@@ -6,9 +6,14 @@ import { useState } from "react";
 export default function Home() {
   const [link, setLink] = useState("");
   const [downloading, setDownloading] = useState(false);
+  const [formats, setFormats] = useState([]);
 
-  const downloadButtonStyle =
+  const buttonStyle =
     "rounded-lg border border-solid flex items-center justify-center text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44 ";
+  const primaryButtonStyle =
+    "border-transparent transition-colors bg-foreground text-background";
+  const secondaryButtonStyle =
+    "border-black/[.08] dark:border-white/[.145] transition-colors";
 
   const handleDownload = async () => {
     if (!link) {
@@ -37,6 +42,63 @@ export default function Home() {
       window.URL.revokeObjectURL(url);
 
       setLink("");
+    } catch (error) {
+      console.error("Error downloading video:", error);
+      alert("Error downloading video");
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  const handleInfo = async () => {
+    if (!link) {
+      alert("Please enter a valid link");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/info?url=${encodeURIComponent(link)}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch video info");
+      }
+
+      const info = await response.json();
+      setFormats(info);
+    } catch (error) {
+      console.error("Error fetching video info:", error);
+      alert("Error fetching video info");
+    }
+  };
+
+  const handleClear = () => {
+    setFormats([]);
+    setLink("");
+  };
+
+  const handleSpecificDownload = async (format) => {
+    setDownloading(true);
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/specificdownload?url=${encodeURIComponent(
+          link
+        )}&format=${encodeURIComponent(JSON.stringify(format))}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to download video");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      a.download = "video.mp4";
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading video:", error);
       alert("Error downloading video");
@@ -96,44 +158,105 @@ export default function Home() {
           </a>
         </div> */}
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <label className="sr-only" htmlFor="link">
-            YouTube link
-          </label>
-          <input
-            className="block w-full sm:w-96 px-4 py-2 border border-solid border-black/[.08] dark:border-white/[.145] rounded placeholder-black/[.5] dark:placeholder-white/[.5] focus:outline-none focus:border-black/[.2] dark:focus:border-white/[.2] focus:ring-2 focus:ring-black/[.1] dark:focus:ring-white/[.1] dark:bg-black/[.05] dark:text-white/[.9] transition-colors"
-            id="link"
-            type="url"
-            placeholder="Link here"
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
-          />
-          <div className="transition-all duration-1000 ease-in-out">
-            {!downloading ? (
-              <button
-                className={
-                  downloadButtonStyle +
-                  "border-transparent transition-colors bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc]"
-                }
-                onClick={handleDownload}
-              >
-                Download
-              </button>
-            ) : (
-              <button
-                className={
-                  "animate-pulse " +
-                  downloadButtonStyle +
-                  "border-black/[.08] dark:border-white/[.145] transition-colors"
-                }
-                onClick={handleDownload}
-                disabled={true}
-              >
-                Just a moment...
-              </button>
-            )}
+        {formats.length === 0 ? (
+          <div className="flex gap-4 items-center flex-col sm:flex-row">
+            <label className="sr-only" htmlFor="link">
+              YouTube link
+            </label>
+            <input
+              className="block w-full sm:w-96 px-4 py-2 border border-solid border-black/[.08] dark:border-white/[.145] rounded placeholder-black/[.5] dark:placeholder-white/[.5] focus:outline-none focus:border-black/[.2] dark:focus:border-white/[.2] focus:ring-2 focus:ring-black/[.1] dark:focus:ring-white/[.1] dark:bg-black/[.05] dark:text-white/[.9] transition-colors"
+              id="link"
+              type="url"
+              placeholder="Link here"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+            />
+            <div className="transition-all duration-1000 ease-in-out">
+              {!downloading ? (
+                <button
+                  className={
+                    buttonStyle +
+                    "border-transparent transition-colors bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc]"
+                  }
+                  onClick={handleDownload}
+                >
+                  Download
+                </button>
+              ) : (
+                <button
+                  className={
+                    "animate-pulse " +
+                    buttonStyle +
+                    "border-black/[.08] dark:border-white/[.145] transition-colors"
+                  }
+                  disabled={true}
+                >
+                  Just a moment...
+                </button>
+              )}
+            </div>
+            <div className="transition-all duration-1000 ease-in-out">
+              {!downloading ? (
+                <button
+                  className={
+                    buttonStyle +
+                    "border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent"
+                  }
+                  onClick={handleInfo}
+                >
+                  More options
+                </button>
+              ) : null}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="transition-all duration-1000 ease-in-out">
+            <button
+              className={
+                buttonStyle +
+                "border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent"
+              }
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+          </div>
+        )}
+
+        {formats.length > 0 && (
+          <div className="w-full mt-8">
+            <table className="min-w-full bg-white dark:bg-black/[.05]">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b">Quality</th>
+                  <th className="py-2 px-4 border-b">Format</th>
+                  <th className="py-2 px-4 border-b">Audio</th>
+                  <th className="py-2 px-4 border-b"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {formats.map((format, index) => (
+                  <tr key={index}>
+                    <td className="py-2 px-4 border-b">{format.quality}</td>
+                    <td className="py-2 px-4 border-b">{format.container}</td>
+                    <td className="py-2 px-4 border-b">
+                      {format.hasAudio ? "Yes" : "No"}
+                    </td>
+                    <td className="py-2 px-4 border-b">
+                      <button
+                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                        onClick={() => handleSpecificDownload(format)}
+                        disabled={downloading}
+                      >
+                        {downloading ? "Downloading..." : "Download"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         {/* <a
