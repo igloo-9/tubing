@@ -21,7 +21,7 @@ app.get("/download", async (req, res) => {
     res.setHeader("Content-Disposition", 'attachment; filename="video.mp4"');
     res.setHeader("Content-Type", "video/mp4");
 
-    ytdl(url)
+    ytdl(url, { filter: "audioandvideo", quality: "highest" })
       .pipe(res)
       .on("finish", () => {
         const finishedNow = new Date().toLocaleString();
