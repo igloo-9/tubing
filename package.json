@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@distube/ytdl-core": "^4.15.8",
+    "@nextui-org/react": "^2.6.10",
+    "@nextui-org/table": "^2.2.7",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "fs": "^0.0.1-security",

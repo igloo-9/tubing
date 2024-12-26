@@ -2,6 +2,14 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell,
+} from "@nextui-org/react";
 
 export default function Home() {
   const [link, setLink] = useState("");
@@ -225,36 +233,47 @@ export default function Home() {
 
         {formats.length > 0 && (
           <div className="w-full mt-8">
-            <table className="min-w-full bg-white dark:bg-black/[.05]">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b">Quality</th>
-                  <th className="py-2 px-4 border-b">Format</th>
-                  <th className="py-2 px-4 border-b">Audio</th>
-                  <th className="py-2 px-4 border-b"></th>
-                </tr>
-              </thead>
-              <tbody>
+            <Table aria-label="Example static collection table">
+              <TableHeader>
+                <TableColumn>Quality</TableColumn>
+                <TableColumn>Format</TableColumn>
+                <TableColumn>Audio</TableColumn>
+                <TableColumn></TableColumn>
+              </TableHeader>
+              <TableBody>
                 {formats.map((format, index) => (
-                  <tr key={index}>
-                    <td className="py-2 px-4 border-b">{format.quality}</td>
-                    <td className="py-2 px-4 border-b">{format.container}</td>
-                    <td className="py-2 px-4 border-b">
+                  <TableRow key={index}>
+                    <TableCell className="text-center">
+                      {format.quality}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {format.container}
+                    </TableCell>
+                    <TableCell className="text-center">
                       {format.hasAudio ? "Yes" : "No"}
-                    </td>
-                    <td className="py-2 px-4 border-b">
+                    </TableCell>
+                    <TableCell className="flex justify-center items-center text-center">
                       <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                        className={
+                          buttonStyle +
+                          "sm:min-w-20 border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent"
+                        }
                         onClick={() => handleSpecificDownload(format)}
                         disabled={downloading}
                       >
-                        {downloading ? "Downloading..." : "Download"}
+                        <Image
+                          aria-hidden
+                          src="/download.svg"
+                          alt="Download icon"
+                          width={16}
+                          height={16}
+                        />
                       </button>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
+              </TableBody>
+            </Table>
           </div>
         )}
       </main>
