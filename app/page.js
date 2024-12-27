@@ -16,6 +16,7 @@ export default function Home() {
   const [downloading, setDownloading] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [formats, setFormats] = useState([]);
+  const [clickedIndex, setClickedIndex] = useState(null);
 
   const buttonStyle =
     "rounded-lg border border-solid flex items-center justify-center text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44 ";
@@ -90,7 +91,8 @@ export default function Home() {
     setLink("");
   };
 
-  const handleSpecificDownload = async (format) => {
+  const handleSpecificDownload = async (format, index) => {
+    setClickedIndex(index);
     setDownloading(true);
 
     try {
@@ -271,18 +273,30 @@ export default function Home() {
                       <button
                         className={
                           buttonStyle +
-                          "sm:min-w-20 border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent"
+                          " sm:min-w-20 border-black/[.08] dark:border-white/[.145] transition-colors " +
+                          (downloading
+                            ? ""
+                            : "hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent")
                         }
-                        onClick={() => handleSpecificDownload(format)}
+                        onClick={() => handleSpecificDownload(format, index)}
                         disabled={downloading}
                       >
-                        <Image
-                          aria-hidden
-                          src="/download.svg"
-                          alt="Download icon"
-                          width={16}
-                          height={16}
-                        />
+                        {clickedIndex === index && downloading ? (
+                          <img
+                            src="/loading.gif"
+                            alt="Loading"
+                            width={24}
+                            height={24}
+                          />
+                        ) : (
+                          <Image
+                            aria-hidden
+                            src="/download.svg"
+                            alt="Download icon"
+                            width={16}
+                            height={16}
+                          />
+                        )}
                       </button>
                     </TableCell>
                   </TableRow>
