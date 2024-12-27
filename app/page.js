@@ -14,6 +14,7 @@ import {
 export default function Home() {
   const [link, setLink] = useState("");
   const [downloading, setDownloading] = useState(false);
+  const [fetching, setFetching] = useState(false);
   const [formats, setFormats] = useState([]);
 
   const buttonStyle =
@@ -64,6 +65,8 @@ export default function Home() {
       return;
     }
 
+    setFetching(true);
+
     try {
       const response = await fetch(
         `http://localhost:3001/info?url=${encodeURIComponent(link)}`
@@ -77,6 +80,8 @@ export default function Home() {
     } catch (error) {
       console.error("Error fetching video info:", error);
       alert("Error fetching video info");
+    } finally {
+      setFetching(false);
     }
   };
 
@@ -204,7 +209,7 @@ export default function Home() {
               )}
             </div>
             <div className="transition-all duration-1000 ease-in-out">
-              {!downloading ? (
+              {!fetching ? (
                 <button
                   className={
                     buttonStyle +
@@ -214,7 +219,17 @@ export default function Home() {
                 >
                   More options
                 </button>
-              ) : null}
+              ) : (
+                <button
+                  className={
+                    "animate-pulse " +
+                    buttonStyle +
+                    "border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent"
+                  }
+                >
+                  Just a moment...
+                </button>
+              )}
             </div>
           </div>
         ) : (
