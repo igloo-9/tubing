@@ -241,14 +241,14 @@ export default function Home() {
               }
               onClick={handleClear}
             >
-              Clear
+              Back
             </button>
           </div>
         )}
 
         {formats.length > 0 && (
           <div className="w-full mt-8">
-            <Table aria-label="Example static collection table">
+            <Table aria-label="video specification table">
               <TableHeader>
                 <TableColumn>Quality</TableColumn>
                 <TableColumn>Format</TableColumn>
