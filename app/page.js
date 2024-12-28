@@ -9,6 +9,7 @@ import {
   TableColumn,
   TableRow,
   TableCell,
+  Alert,
 } from "@nextui-org/react";
 
 export default function Home() {
@@ -17,16 +18,14 @@ export default function Home() {
   const [fetching, setFetching] = useState(false);
   const [formats, setFormats] = useState([]);
   const [clickedIndex, setClickedIndex] = useState(null);
+  const [validLink, setValidLink] = useState(true);
 
   const buttonStyle =
     "rounded-lg border border-solid flex items-center justify-center text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44 ";
 
-  const handleDownload = async () => {
-    if (!link) {
-      alert("Please enter a valid link");
-      return;
-    }
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  const handleDownload = async () => {
     setDownloading(true);
 
     try {
@@ -34,8 +33,13 @@ export default function Home() {
         `http://localhost:3001/download?url=${encodeURIComponent(link)}`
       );
       if (!response.ok) {
-        throw new Error("Failed to download video");
+        await delay(2000);
+        setValidLink(false);
+        setLink("");
+        return;
       }
+
+      setValidLink(true);
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -50,18 +54,13 @@ export default function Home() {
       setLink("");
     } catch (error) {
       console.error("Error downloading video:", error);
-      alert("Error downloading video");
+      setValidLink(false);
     } finally {
       setDownloading(false);
     }
   };
 
   const handleInfo = async () => {
-    if (!link) {
-      alert("Please enter a valid link");
-      return;
-    }
-
     setFetching(true);
 
     try {
@@ -69,8 +68,11 @@ export default function Home() {
         `http://localhost:3001/info?url=${encodeURIComponent(link)}`
       );
       if (!response.ok) {
-        throw new Error("Failed to fetch video info");
+        setValidLink(false);
+        return;
       }
+
+      setValidLink(true);
 
       const info = await response.json();
       setFormats(info);
@@ -121,6 +123,16 @@ export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+        {!validLink && (
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-4">
+            <Alert
+              key="flat"
+              color="danger"
+              title="Please provide a valid YouTube link"
+              variant="flat"
+            />
+          </div>
+        )}
         {/* <Image
           className="dark:invert"
           src="/next.svg"
