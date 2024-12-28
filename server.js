@@ -113,13 +113,26 @@ app.get("/specificdownload", async (req, res) => {
     res.setHeader("Content-Type", "video/" + extension);
 
     // use stringified format object to leverage speed
-    // using format object signifanctly slow down the download process
-    ytdl(url, { format: format })
-      .pipe(res)
-      .on("finish", () => {
-        const finishedNow = new Date().toLocaleString();
-        console.log(`[server] (${finishedNow}) Downloaded video: ${url}`);
-      });
+    // using format object signifanctly slow down the download process\
+    const filter = formatObj.hasAudio ? "audioandvideo" : "video";
+    const stream = ytdl(url, {
+      filter: filter,
+      format: format,
+    });
+
+    stream.pipe(res);
+
+    stream.on("finish", () => {
+      const finishedNow = new Date().toLocaleString();
+      console.log(`[server] (${finishedNow}) Downloaded video: ${url}`);
+    });
+
+    stream.on("error", (error) => {
+      console.error("Error downloading video:", error);
+      res
+        .status(500)
+        .json({ error: "Error downloading video", details: error.message });
+    });
   } catch (error) {
     console.error("Error fetching video:", error);
     res
