@@ -164,6 +164,7 @@ export default function Home() {
                     "border-transparent transition-colors bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc]"
                   }
                   onClick={handleDownload}
+                  disabled={!link}
                 >
                   Download
                 </button>
@@ -188,6 +189,7 @@ export default function Home() {
                     "border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent"
                   }
                   onClick={handleInfo}
+                  disabled={!link}
                 >
                   More options
                 </button>
