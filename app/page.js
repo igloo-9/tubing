@@ -54,7 +54,6 @@ export default function Home() {
       setLink("");
     } catch (error) {
       console.error("Error downloading video:", error);
-      setValidLink(false);
     } finally {
       setDownloading(false);
     }
@@ -80,7 +79,6 @@ export default function Home() {
       setFormats(info);
     } catch (error) {
       console.error("Error fetching video info:", error);
-      alert("Error fetching video info");
     } finally {
       setFetching(false);
     }
