@@ -68,7 +68,9 @@ export default function Home() {
         `http://localhost:3001/info?url=${encodeURIComponent(link)}`
       );
       if (!response.ok) {
+        await delay(2000);
         setValidLink(false);
+        setLink("");
         return;
       }
 
