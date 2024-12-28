@@ -149,9 +149,12 @@ export default function Home() {
             </code>
             . */}
           </li>
-          <li>
-            Choosing the desired specification of the video to download when the
-            processing is ready.
+          <li className="mb-2">
+            Download in default format or choose the desired audio and video
+            quality by checking more options.
+          </li>
+          <li className="mb-2">
+            Write to me with your feedback and perhaps buy me a coffee {`<`}3
           </li>
         </ol>
 
@@ -234,7 +237,7 @@ export default function Home() {
 
         {formats.length > 0 && (
           <div className="w-full mt-8">
-            <Table aria-label="video specification table">
+            <Table className="dark" aria-label="video specification table">
               <TableHeader>
                 <TableColumn>Quality</TableColumn>
                 <TableColumn>Format</TableColumn>
@@ -244,15 +247,9 @@ export default function Home() {
               <TableBody>
                 {formats.map((format, index) => (
                   <TableRow key={index}>
-                    <TableCell className="text-center">
-                      {format.quality}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {format.container}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {format.hasAudio ? "Yes" : "No"}
-                    </TableCell>
+                    <TableCell>{format.quality}</TableCell>
+                    <TableCell>{format.container}</TableCell>
+                    <TableCell>{format.hasAudio ? "Yes" : "No"}</TableCell>
                     <TableCell className="flex justify-center items-center text-center">
                       <button
                         className={
