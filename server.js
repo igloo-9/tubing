@@ -21,12 +21,21 @@ app.get("/download", async (req, res) => {
     res.setHeader("Content-Disposition", 'attachment; filename="video.mp4"');
     res.setHeader("Content-Type", "video/mp4");
 
-    ytdl(url, { filter: "audioandvideo", quality: "highest" })
-      .pipe(res)
-      .on("finish", () => {
-        const finishedNow = new Date().toLocaleString();
-        console.log(`[server] (${finishedNow}) Downloaded video: ${url}`);
-      });
+    const stream = ytdl(url, { filter: "audioandvideo", quality: "highest" });
+
+    stream.pipe(res);
+
+    stream.on("finish", () => {
+      const finishedNow = new Date().toLocaleString();
+      console.log(`[server] (${finishedNow}) Downloaded video: ${url}`);
+    });
+
+    stream.on("error", (error) => {
+      console.error("Error downloading video:", error);
+      res
+        .status(500)
+        .json({ error: "Error downloading video", details: error.message });
+    });
   } catch (error) {
     console.error("Error fetching video:", error);
     res
