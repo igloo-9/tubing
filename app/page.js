@@ -296,12 +296,12 @@ export default function Home() {
         >
           <Image
             aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+            src="/voicemail.svg"
+            alt="Voicemail icon"
+            width={22}
+            height={22}
           />
-          Code
+          Contact me
         </a>
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
@@ -311,12 +311,27 @@ export default function Home() {
         >
           <Image
             aria-hidden
-            src="/file.svg"
-            alt="File icon"
+            src="/scroll.svg"
+            alt="Scroll icon"
+            width={20}
+            height={20}
+          />
+          Disclaimer
+        </a>
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href=""
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            aria-hidden
+            src="/paypal.svg"
+            alt="Paypal icon"
             width={16}
             height={16}
           />
-          Disclaimer
+          Send love
         </a>
       </footer>
     </div>
