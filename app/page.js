@@ -169,7 +169,7 @@ export default function Home() {
               className="block w-full sm:w-96 px-4 py-2 border border-solid border-black/[.08] dark:border-white/[.145] rounded placeholder-black/[.5] dark:placeholder-white/[.5] focus:outline-none focus:border-black/[.2] dark:focus:border-white/[.2] focus:ring-2 focus:ring-black/[.1] dark:focus:ring-white/[.1] dark:bg-black/[.05] dark:text-white/[.9] transition-colors"
               id="link"
               type="url"
-              placeholder="Link here"
+              placeholder="YouTube link here"
               value={link}
               onChange={(e) => setLink(e.target.value)}
             />
