@@ -123,7 +123,7 @@ export default function Home() {
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start -mt-20">
         {!validLink && (
           <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-4">
             <Alert
@@ -142,6 +142,7 @@ export default function Home() {
           height={38}
           priority
         /> */}
+        <img src="/logo.svg" alt="Logo" width={240} height={80} />
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
           <li className="mb-2">
             Please read the disclaimer before using this service.
@@ -288,7 +289,7 @@ export default function Home() {
           </div>
         )}
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
+      <footer className="row-start-3 flex gap-12 flex-wrap items-center justify-center">
         <Tooltip
           className="dark"
           content={
