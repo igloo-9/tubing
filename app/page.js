@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import Image from "next/image";
-import { useState } from "react";
+import Image from 'next/image'
+import { useState } from 'react'
 import {
   Table,
   TableHeader,
@@ -10,115 +10,115 @@ import {
   TableRow,
   TableCell,
   Alert,
-} from "@nextui-org/react";
+} from '@nextui-org/react'
 
 export default function Home() {
-  const [link, setLink] = useState("");
-  const [downloading, setDownloading] = useState(false);
-  const [fetching, setFetching] = useState(false);
-  const [formats, setFormats] = useState([]);
-  const [clickedIndex, setClickedIndex] = useState(null);
-  const [validLink, setValidLink] = useState(true);
+  const [link, setLink] = useState('')
+  const [downloading, setDownloading] = useState(false)
+  const [fetching, setFetching] = useState(false)
+  const [formats, setFormats] = useState([])
+  const [clickedIndex, setClickedIndex] = useState(null)
+  const [validLink, setValidLink] = useState(true)
 
   const buttonStyle =
-    "rounded-lg border border-solid flex items-center justify-center text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44 ";
+    'rounded-lg border border-solid flex items-center justify-center text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44 '
 
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
   const handleDownload = async () => {
-    setDownloading(true);
+    setDownloading(true)
 
     try {
       const response = await fetch(
-        `http://localhost:3001/download?url=${encodeURIComponent(link)}`
-      );
+        `http://localhost:3001/download?url=${encodeURIComponent(link)}`,
+      )
       if (!response.ok) {
-        await delay(2000);
-        setValidLink(false);
-        setLink("");
-        return;
+        await delay(2000)
+        setValidLink(false)
+        setLink('')
+        return
       }
 
-      setValidLink(true);
+      setValidLink(true)
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = "video.mp4";
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.style.display = 'none'
+      a.href = url
+      a.download = 'video.mp4'
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
 
-      setLink("");
+      setLink('')
     } catch (error) {
-      console.error("Error downloading video:", error);
+      console.error('Error downloading video:', error)
     } finally {
-      setDownloading(false);
+      setDownloading(false)
     }
-  };
+  }
 
   const handleInfo = async () => {
-    setFetching(true);
+    setFetching(true)
 
     try {
       const response = await fetch(
-        `http://localhost:3001/info?url=${encodeURIComponent(link)}`
-      );
+        `http://localhost:3001/info?url=${encodeURIComponent(link)}`,
+      )
       if (!response.ok) {
-        await delay(2000);
-        setValidLink(false);
-        setLink("");
-        return;
+        await delay(2000)
+        setValidLink(false)
+        setLink('')
+        return
       }
 
-      setValidLink(true);
+      setValidLink(true)
 
-      const info = await response.json();
-      setFormats(info);
+      const info = await response.json()
+      setFormats(info)
     } catch (error) {
-      console.error("Error fetching video info:", error);
+      console.error('Error fetching video info:', error)
     } finally {
-      setFetching(false);
+      setFetching(false)
     }
-  };
+  }
 
   const handleClear = () => {
-    setFormats([]);
-    setLink("");
-  };
+    setFormats([])
+    setLink('')
+  }
 
   const handleSpecificDownload = async (format, index) => {
-    setClickedIndex(index);
-    setDownloading(true);
+    setClickedIndex(index)
+    setDownloading(true)
 
     try {
       const response = await fetch(
         `http://localhost:3001/specificdownload?url=${encodeURIComponent(
-          link
-        )}&format=${encodeURIComponent(JSON.stringify(format))}`
-      );
+          link,
+        )}&format=${encodeURIComponent(JSON.stringify(format))}`,
+      )
       if (!response.ok) {
-        throw new Error("Failed to download video");
+        throw new Error('Failed to download video')
       }
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = `video.${format.container}`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.style.display = 'none'
+      a.href = url
+      a.download = `video.${format.container}`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
     } catch (error) {
-      console.error("Error downloading video:", error);
-      alert("Error downloading video");
+      console.error('Error downloading video:', error)
+      alert('Error downloading video')
     } finally {
-      setDownloading(false);
+      setDownloading(false)
     }
-  };
+  }
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -176,7 +176,7 @@ export default function Home() {
                 <button
                   className={
                     buttonStyle +
-                    "border-transparent transition-colors bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc]"
+                    'border-transparent transition-colors bg-foreground text-background hover:bg-[#383838] dark:hover:bg-[#ccc]'
                   }
                   onClick={handleDownload}
                   disabled={!link}
@@ -186,9 +186,9 @@ export default function Home() {
               ) : (
                 <button
                   className={
-                    "animate-pulse " +
+                    'animate-pulse ' +
                     buttonStyle +
-                    "border-black/[.08] dark:border-white/[.145] transition-colors"
+                    'border-black/[.08] dark:border-white/[.145] transition-colors'
                   }
                   disabled={true}
                 >
@@ -201,7 +201,7 @@ export default function Home() {
                 <button
                   className={
                     buttonStyle +
-                    "border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent"
+                    'border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent'
                   }
                   onClick={handleInfo}
                   disabled={!link}
@@ -211,9 +211,9 @@ export default function Home() {
               ) : (
                 <button
                   className={
-                    "animate-pulse " +
+                    'animate-pulse ' +
                     buttonStyle +
-                    "border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent"
+                    'border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent'
                   }
                 >
                   Just a moment...
@@ -226,7 +226,7 @@ export default function Home() {
             <button
               className={
                 buttonStyle +
-                "border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent"
+                'border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent'
               }
               onClick={handleClear}
             >
@@ -249,15 +249,15 @@ export default function Home() {
                   <TableRow key={index}>
                     <TableCell>{format.quality}</TableCell>
                     <TableCell>{format.container}</TableCell>
-                    <TableCell>{format.hasAudio ? "Yes" : "No"}</TableCell>
+                    <TableCell>{format.hasAudio ? 'Yes' : 'No'}</TableCell>
                     <TableCell className="flex justify-center items-center text-center">
                       <button
                         className={
                           buttonStyle +
-                          " sm:min-w-20 border-black/[.08] dark:border-white/[.145] transition-colors " +
+                          ' sm:min-w-20 border-black/[.08] dark:border-white/[.145] transition-colors ' +
                           (downloading
-                            ? ""
-                            : "hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent")
+                            ? ''
+                            : 'hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent')
                         }
                         onClick={() => handleSpecificDownload(format, index)}
                         disabled={downloading}
@@ -320,5 +320,5 @@ export default function Home() {
         </a>
       </footer>
     </div>
-  );
+  )
 }
