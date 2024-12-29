@@ -142,23 +142,37 @@ export default function Home() {
           height={38}
           priority
         /> */}
-        <img src="/logo.svg" alt="Logo" width={240} height={80} />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Please read the disclaimer before using this service.
-            {/* <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
+        {formats.length === 0 ? (
+          <img src="/logo.svg" alt="Logo" width={240} height={80} />
+        ) : (
+          <img src="/smlogo.svg" alt="Small Logo" width={80} height={80} />
+        )}
+        {formats.length === 0 ? (
+          <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
+            <li className="mb-2">
+              Please read the disclaimer before using this service.
+              {/* <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
               app/page.js
             </code>
             . */}
-          </li>
-          <li className="mb-2">
-            Download in default format or choose the desired audio and video
-            quality by checking more options.
-          </li>
-          <li className="mb-2">
-            Write to me with your feedback and perhaps buy me a coffee {`<`}3
-          </li>
-        </ol>
+            </li>
+            <li className="mb-2">
+              Download in default format or choose the desired audio and video
+              quality by checking more options.
+            </li>
+            <li className="mb-2">
+              Write to me with your feedback and perhaps buy me a coffee {`<`}3
+            </li>
+          </ol>
+        ) : (
+          <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
+            <li className="mb-2">
+              Choose the desired audio and video quality (please note that not
+              all formats support audio.)
+            </li>
+            <li className="mb-2">Any kind of support is appreciated {`<`}3</li>
+          </ol>
+        )}
 
         {formats.length === 0 ? (
           <div className="flex gap-4 items-center flex-col sm:flex-row">
