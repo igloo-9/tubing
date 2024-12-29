@@ -134,14 +134,6 @@ export default function Home() {
             />
           </div>
         )}
-        {/* <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        /> */}
         {formats.length === 0 ? (
           <img src="/logo.svg" alt="Logo" width={240} height={80} />
         ) : (
@@ -151,10 +143,6 @@ export default function Home() {
           <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
             <li className="mb-2">
               Please read the disclaimer before using this service.
-              {/* <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.js
-            </code>
-            . */}
             </li>
             <li className="mb-2">
               Download in default format or choose the desired audio and video
