@@ -293,7 +293,7 @@ export default function Home() {
           className="dark"
           content={
             <span>
-              For Chrome users, <br /> refer to{' '}
+              If you use Chrome, <br /> kindly refer to{' '}
               <a
                 href="https://support.google.com/chrome/thread/57026170/how-to-add-gmail-as-default-mailto-handler?hl=en"
                 target="_blank"
