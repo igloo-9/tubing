@@ -10,6 +10,7 @@ import {
   TableRow,
   TableCell,
   Alert,
+  Tooltip,
 } from '@nextui-org/react'
 
 export default function Home() {
@@ -288,21 +289,40 @@ export default function Home() {
         )}
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://github.com/igloo-9/tubing"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Tooltip
+          className="dark"
+          content={
+            <span>
+              For Chrome users, <br /> refer to{' '}
+              <a
+                href="https://support.google.com/chrome/thread/57026170/how-to-add-gmail-as-default-mailto-handler?hl=en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline"
+              >
+                this guide
+              </a>{' '}
+              if having trouble emailing
+            </span>
+          }
+          placement="left"
         >
-          <Image
-            aria-hidden
-            src="/voicemail.svg"
-            alt="Voicemail icon"
-            width={22}
-            height={22}
-          />
-          Contact me
-        </a>
+          <a
+            className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+            href="mailto:ikcyr@hotmail.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              aria-hidden
+              src="/voicemail.svg"
+              alt="Voicemail icon"
+              width={22}
+              height={22}
+            />
+            Contact me
+          </a>
+        </Tooltip>
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
           href=""
