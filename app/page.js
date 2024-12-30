@@ -308,7 +308,7 @@ export default function Home() {
               if having trouble emailing
             </span>
           }
-          placement="left"
+          placement="top"
         >
           <a
             className="flex items-center gap-2 hover:underline hover:underline-offset-4"
