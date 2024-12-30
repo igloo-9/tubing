@@ -326,21 +326,46 @@ export default function Home() {
             Contact me
           </a>
         </Tooltip>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href=""
-          target="_blank"
-          rel="noopener noreferrer"
+        <Tooltip
+          className="dark"
+          content={
+            <div className="px-1 py-2">
+              <div className="text-small font-bold">
+                This service is provided for educational and personal use only!
+              </div>
+              <div className="text-tiny">
+                Downloading videos from YouTube may violate YouTube's terms of
+                service. It is your responsibility to ensure that your use of
+                this service complies with all applicable laws and regulations.
+              </div>
+              <div className="text-tiny">
+                We do not endorse or condone the illegal downloading or
+                distribution of copyrighted content.
+              </div>
+              <div className="text-tiny">
+                By using this service, you agree to assume all risks and
+                liabilities associated with the use of this service.
+              </div>
+            </div>
+          }
+          placement="top"
         >
-          <Image
-            aria-hidden
-            src="/scroll.svg"
-            alt="Scroll icon"
-            width={20}
-            height={20}
-          />
-          Disclaimer
-        </a>
+          <a
+            className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+            href=""
+            rel="noopener noreferrer"
+          >
+            <Image
+              aria-hidden
+              src="/scroll.svg"
+              alt="Scroll icon"
+              width={20}
+              height={20}
+            />
+            Disclaimer
+          </a>
+        </Tooltip>
+
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
           href="https://paypal.me/ikcyr?country.x=US&locale.x=en_US"
