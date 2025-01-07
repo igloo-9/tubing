@@ -31,7 +31,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/download?url=${encodeURIComponent(link)}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/download?url=${encodeURIComponent(link)}`,
       )
       if (!response.ok) {
         await delay(2000)
@@ -65,7 +65,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/info?url=${encodeURIComponent(link)}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/info?url=${encodeURIComponent(link)}`,
       )
       if (!response.ok) {
         await delay(2000)
@@ -96,7 +96,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/specificdownload?url=${encodeURIComponent(
+        `${process.env.NEXT_PUBLIC_API_URL}/specificdownload?url=${encodeURIComponent(
           link,
         )}&format=${encodeURIComponent(JSON.stringify(format))}`,
       )

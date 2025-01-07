@@ -1,9 +1,10 @@
 const express = require('express')
 const ytdl = require('@distube/ytdl-core')
 const cors = require('cors')
+require('dotenv').config()
 
 const app = express()
-const port = 3001
+const port = process.env.PORT || 3001
 
 app.use(cors())
 
