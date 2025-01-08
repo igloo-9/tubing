@@ -142,6 +142,4 @@ app.get('/specificdownload', async (req, res) => {
   }
 })
 
-app.listen(port, () => {
-  console.log(`[server] Running on http://localhost:${port}`)
-})
+module.exports = app
