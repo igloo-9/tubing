@@ -6,6 +6,22 @@ const app = express()
 
 app.use(cors())
 
+// proxy middleware configuration
+const proxyOptions = {
+  target: 'https://www.youtube.com',
+  changeOrigin: true,
+  onProxyReq: (proxyReq, req, res) => {
+    // any custom headers or modifications to the proxy request here
+  },
+  onError: (err, req, res) => {
+    console.error('Proxy error:', err)
+    res.status(500).json({ error: 'Proxy error', details: err.message })
+  },
+}
+
+// use the proxy middleware for YouTube requests
+app.use('/youtube', createProxyMiddleware(proxyOptions))
+
 app.get('/api/download', async (req, res) => {
   const { url } = req.query
 
@@ -14,7 +30,6 @@ app.get('/api/download', async (req, res) => {
   }
 
   try {
-    console.log('URL:', url)
     const now = new Date().toLocaleString()
     console.log(`[server] (${now}) Downloading video: ${url}`)
 
