@@ -14,6 +14,7 @@ app.get('/api/download', async (req, res) => {
   }
 
   try {
+    console.log('URL:', url)
     const now = new Date().toLocaleString()
     console.log(`[server] (${now}) Downloading video: ${url}`)
 
