@@ -1,5 +1,6 @@
 const express = require('express')
 const ytdl = require('@distube/ytdl-core')
+const ytdlc = require('ytdl-core')
 const cors = require('cors')
 const { createProxyMiddleware } = require('http-proxy-middleware')
 const axios = require('axios')
@@ -8,49 +9,24 @@ const app = express()
 
 app.use(cors())
 
-// proxy middleware configuration
-async function getRandomProxy() {
+// config
+const USER_AGENT =
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+const COOKIES = ''
+const MAX_RETRIES = 3
+
+// retry logic with exponential backoff
+async function retryWithBackoff(fn, retries = 0) {
   try {
-    const response = await axios.get(
-      'https://www.proxy-list.download/api/v1/get?type=https',
-    )
-    const proxies = response.data.split('\r\n').filter(Boolean)
-    const randomProxy = proxies[Math.floor(Math.random() * proxies.length)]
-    return randomProxy
+    return await fn()
   } catch (error) {
-    console.error('Error fetching proxy list:', error)
-    return null
+    if (retries >= MAX_RETRIES) throw error
+    await new Promise((r) => setTimeout(r, Math.pow(2, retries) * 1000))
+    return retryWithBackoff(fn, retries + 1)
   }
 }
-// use the proxy middleware for YouTube requests
-app.use('/youtube', async (req, res, next) => {
-  const proxy = await getRandomProxy()
-  if (proxy) {
-    const [host, port] = proxy.split(':')
-    createProxyMiddleware({
-      target: 'https://www.youtube.com',
-      changeOrigin: true,
-      proxyTimeout: 5000,
-      onProxyReq: (proxyReq, req, res) => {
-        proxyReq.setHeader('Host', 'www.youtube.com')
-        proxyReq.setHeader('X-Forwarded-For', host)
-      },
-      onError: (err, req, res) => {
-        console.error('Proxy error:', err)
-        res.status(500).json({ error: 'Proxy error', details: err.message })
-      },
-      agent: new (require('https').Agent)({
-        host,
-        port,
-        keepAlive: true,
-      }),
-    })(req, res, next)
-  } else {
-    res.status(500).json({ error: 'Failed to get proxy' })
-  }
-})
 
-app.get('/api/download', async (req, res) => {
+/* app.get('/api/download', async (req, res) => {
   const { url } = req.query
 
   if (!url) {
@@ -84,6 +60,56 @@ app.get('/api/download', async (req, res) => {
     res
       .status(500)
       .json({ error: 'Internal server error', details: error.message })
+  }
+}) */
+
+app.get('/api/download', async (req, res) => {
+  const { url } = req.query
+  if (!url) return res.status(400).json({ error: 'URL required' })
+
+  try {
+    const videoInfo = await retryWithBackoff(() =>
+      ytdl.getInfo(url, {
+        requestOptions: {
+          headers: {
+            'User-Agent': USER_AGENT,
+            Cookie: COOKIES,
+          },
+        },
+      }),
+    )
+
+    res.setHeader('Content-Disposition', 'attachment; filename="video.mp4"')
+    res.setHeader('Content-Type', 'video/mp4')
+
+    const stream = ytdl.downloadFromInfo(videoInfo, {
+      quality: 'highest',
+      filter: 'audioandvideo',
+      requestOptions: {
+        headers: {
+          'User-Agent': USER_AGENT,
+          Cookie: COOKIES,
+        },
+      },
+    })
+
+    stream.pipe(res)
+
+    stream.on('error', (error) => {
+      console.error('Stream error:', error)
+      if (!res.headersSent) {
+        res
+          .status(500)
+          .json({ error: 'Download failed', details: error.message })
+      }
+    })
+  } catch (error) {
+    console.error('Download error:', error)
+    res.status(500).json({
+      error: 'Download failed',
+      details: error.message,
+      retryAfter: '60 seconds',
+    })
   }
 })
 
