@@ -1,6 +1,7 @@
 const express = require('express')
 const ytdl = require('@distube/ytdl-core')
 const cors = require('cors')
+const { createProxyMiddleware } = require('http-proxy-middleware')
 
 const app = express()
 
