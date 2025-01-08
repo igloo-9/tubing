@@ -135,9 +135,9 @@ export default function Home() {
           </div>
         )}
         {formats.length === 0 ? (
-          <img src="/logo.svg" alt="Logo" width={240} height={80} />
+          <Image src="/logo.svg" alt="Logo" width={240} height={80} />
         ) : (
-          <img src="/smlogo.svg" alt="Small Logo" width={80} height={80} />
+          <Image src="/smlogo.svg" alt="Small Logo" width={80} height={80} />
         )}
         {formats.length === 0 ? (
           <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
@@ -267,7 +267,7 @@ export default function Home() {
                         disabled={downloading}
                       >
                         {clickedIndex === index && downloading ? (
-                          <img
+                          <Image
                             src="/loading.gif"
                             alt="Loading"
                             width={24}
