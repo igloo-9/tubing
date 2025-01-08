@@ -31,7 +31,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/download?url=${encodeURIComponent(link)}`,
+        `https://tubing.vercel.app/api/download?url=${encodeURIComponent(link)}`,
       )
       if (!response.ok) {
         await delay(2000)
@@ -65,7 +65,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/info?url=${encodeURIComponent(link)}`,
+        `https://tubing.vercel.app/api/info?url=${encodeURIComponent(link)}`,
       )
       if (!response.ok) {
         await delay(2000)
@@ -96,7 +96,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/specificdownload?url=${encodeURIComponent(
+        `https://tubing.vercel.app/api/specificdownload?url=${encodeURIComponent(
           link,
         )}&format=${encodeURIComponent(JSON.stringify(format))}`,
       )
