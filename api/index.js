@@ -4,11 +4,11 @@ const cors = require('cors')
 require('dotenv').config()
 
 const app = express()
-const port = process.env.PORT || 3001
+const port = process.env.PORT || 3000
 
 app.use(cors())
 
-app.get('/download', async (req, res) => {
+app.get('/api/download', async (req, res) => {
   const { url } = req.query
 
   if (!url) {
@@ -45,7 +45,7 @@ app.get('/download', async (req, res) => {
   }
 })
 
-app.get('/info', async (req, res) => {
+app.get('/api/info', async (req, res) => {
   const { url } = req.query
 
   if (!url) {
@@ -92,7 +92,7 @@ app.get('/info', async (req, res) => {
   }
 })
 
-app.get('/specificdownload', async (req, res) => {
+app.get('/api/specificdownload', async (req, res) => {
   const { url, format } = req.query
   const formatObj = JSON.parse(format)
 
