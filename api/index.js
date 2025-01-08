@@ -2,26 +2,53 @@ const express = require('express')
 const ytdl = require('@distube/ytdl-core')
 const cors = require('cors')
 const { createProxyMiddleware } = require('http-proxy-middleware')
+const axios = require('axios')
 
 const app = express()
 
 app.use(cors())
 
 // proxy middleware configuration
-const proxyOptions = {
-  target: 'https://www.youtube.com',
-  changeOrigin: true,
-  onProxyReq: (proxyReq, req, res) => {
-    // any custom headers or modifications to the proxy request here
-  },
-  onError: (err, req, res) => {
-    console.error('Proxy error:', err)
-    res.status(500).json({ error: 'Proxy error', details: err.message })
-  },
+async function getRandomProxy() {
+  try {
+    const response = await axios.get(
+      'https://www.proxy-list.download/api/v1/get?type=https',
+    )
+    const proxies = response.data.split('\r\n').filter(Boolean)
+    const randomProxy = proxies[Math.floor(Math.random() * proxies.length)]
+    return randomProxy
+  } catch (error) {
+    console.error('Error fetching proxy list:', error)
+    return null
+  }
 }
-
 // use the proxy middleware for YouTube requests
-app.use('/youtube', createProxyMiddleware(proxyOptions))
+app.use('/youtube', async (req, res, next) => {
+  const proxy = await getRandomProxy()
+  if (proxy) {
+    const [host, port] = proxy.split(':')
+    createProxyMiddleware({
+      target: 'https://www.youtube.com',
+      changeOrigin: true,
+      proxyTimeout: 5000,
+      onProxyReq: (proxyReq, req, res) => {
+        proxyReq.setHeader('Host', 'www.youtube.com')
+        proxyReq.setHeader('X-Forwarded-For', host)
+      },
+      onError: (err, req, res) => {
+        console.error('Proxy error:', err)
+        res.status(500).json({ error: 'Proxy error', details: err.message })
+      },
+      agent: new (require('https').Agent)({
+        host,
+        port,
+        keepAlive: true,
+      }),
+    })(req, res, next)
+  } else {
+    res.status(500).json({ error: 'Failed to get proxy' })
+  }
+})
 
 app.get('/api/download', async (req, res) => {
   const { url } = req.query
