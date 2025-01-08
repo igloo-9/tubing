@@ -24,9 +24,9 @@
     "styled-components": "^6.1.13"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "eslint": "^9",
-    "eslint-config-next": "15.1.2",
+    "@eslint/eslintrc": "^3.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "13.1.2",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "postcss": "^8",
