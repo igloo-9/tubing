@@ -9,7 +9,9 @@ app.use(cors())
 
 // ensure the correct path to cookies.json
 const cookiesPath = path.join(__dirname, 'cookies.json')
+console.log('cookiesPath:', cookiesPath)
 const agent = ytdl.createAgent(fs.readFileSync(cookiesPath, 'utf8'))
+console.log('agent:', agent)
 
 app.get('/api/download', async (req, res) => {
   const { url } = req.query
