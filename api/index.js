@@ -1,12 +1,21 @@
 const express = require('express')
 const ytdl = require('@distube/ytdl-core')
 const cors = require('cors')
-const { createProxyMiddleware } = require('http-proxy-middleware')
-const axios = require('axios')
 
 const app = express()
 
 app.use(cors())
+
+const requestOptions = {
+  headers: {
+    'User-Agent':
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+    Cookie:
+      'VISITOR_INFO1_LIVE=xyz; CONSENT=YES+; PREF=f6; SID=g.a000sAioIXuBomZjf; SIDCC=AKEyXzWKM_IQpINjjQHX6ba8jWDW0Wcl8li; APISID=PtyoBIwmZs-; SAPISID=zAldbjtfuiL5L5_2/Av_i; LOGIN_INFO=zAldbjtfuiL5L5_2/Av_i;',
+  },
+}
+
+const agent = ytdl.createAgent(cookies, agentOptions)
 
 app.get('/api/download', async (req, res) => {
   const { url } = req.query
@@ -22,7 +31,11 @@ app.get('/api/download', async (req, res) => {
     res.setHeader('Content-Disposition', 'attachment; filename="video.mp4"')
     res.setHeader('Content-Type', 'video/mp4')
 
-    const stream = ytdl(url, { filter: 'audioandvideo', quality: 'highest' })
+    const stream = ytdl(url, {
+      filter: 'audioandvideo',
+      quality: 'highest',
+      requestOptions,
+    })
 
     stream.pipe(res)
 
