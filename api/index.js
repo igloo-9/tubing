@@ -1,6 +1,5 @@
 const express = require('express')
 const ytdl = require('@distube/ytdl-core')
-const ytdlc = require('ytdl-core')
 const cors = require('cors')
 const { createProxyMiddleware } = require('http-proxy-middleware')
 const axios = require('axios')
@@ -9,24 +8,7 @@ const app = express()
 
 app.use(cors())
 
-// config
-const USER_AGENT =
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
-const COOKIES = ''
-const MAX_RETRIES = 3
-
-// retry logic with exponential backoff
-async function retryWithBackoff(fn, retries = 0) {
-  try {
-    return await fn()
-  } catch (error) {
-    if (retries >= MAX_RETRIES) throw error
-    await new Promise((r) => setTimeout(r, Math.pow(2, retries) * 1000))
-    return retryWithBackoff(fn, retries + 1)
-  }
-}
-
-/* app.get('/api/download', async (req, res) => {
+app.get('/api/download', async (req, res) => {
   const { url } = req.query
 
   if (!url) {
@@ -60,56 +42,6 @@ async function retryWithBackoff(fn, retries = 0) {
     res
       .status(500)
       .json({ error: 'Internal server error', details: error.message })
-  }
-}) */
-
-app.get('/api/download', async (req, res) => {
-  const { url } = req.query
-  if (!url) return res.status(400).json({ error: 'URL required' })
-
-  try {
-    const videoInfo = await retryWithBackoff(() =>
-      ytdl.getInfo(url, {
-        requestOptions: {
-          headers: {
-            'User-Agent': USER_AGENT,
-            Cookie: COOKIES,
-          },
-        },
-      }),
-    )
-
-    res.setHeader('Content-Disposition', 'attachment; filename="video.mp4"')
-    res.setHeader('Content-Type', 'video/mp4')
-
-    const stream = ytdl.downloadFromInfo(videoInfo, {
-      quality: 'highest',
-      filter: 'audioandvideo',
-      requestOptions: {
-        headers: {
-          'User-Agent': USER_AGENT,
-          Cookie: COOKIES,
-        },
-      },
-    })
-
-    stream.pipe(res)
-
-    stream.on('error', (error) => {
-      console.error('Stream error:', error)
-      if (!res.headersSent) {
-        res
-          .status(500)
-          .json({ error: 'Download failed', details: error.message })
-      }
-    })
-  } catch (error) {
-    console.error('Download error:', error)
-    res.status(500).json({
-      error: 'Download failed',
-      details: error.message,
-      retryAfter: '60 seconds',
-    })
   }
 })
 
