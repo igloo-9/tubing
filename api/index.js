@@ -3,17 +3,18 @@ const ytdl = require('@distube/ytdl-core')
 const cors = require('cors')
 
 const app = express()
-
 app.use(cors())
 
-const requestOptions = {
-  headers: {
-    'User-Agent':
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-    Cookie:
-      'VISITOR_INFO1_LIVE=xyz; CONSENT=YES+; PREF=f6; SID=g.a000sAioIXuBomZjf; SIDCC=AKEyXzWKM_IQpINjjQHX6ba8jWDW0Wcl8li; APISID=PtyoBIwmZs-; SAPISID=zAldbjtfuiL5L5_2/Av_i; LOGIN_INFO=zAldbjtfuiL5L5_2/Av_i;',
-  },
-}
+const cookies = [
+  { name: 'PREF', value: 'f6' },
+  { name: 'SID', value: 'g.a000sAioIXuBomZjf' },
+  { name: 'SIDCC', value: 'AKEyXzWKM_IQpINjjQHX6ba8jWDW0Wcl8li' },
+  { name: 'APISID', value: 'PtyoBIwmZs-' },
+  { name: 'SAPISID', value: 'zAldbjtfuiL5L5_2/Av_i' },
+  { name: 'LOGIN_INFO', value: 'zAldbjtfuiL5L5_2/Av_i' },
+]
+
+const agent = ytdl.createAgent(cookies, {})
 
 app.get('/api/download', async (req, res) => {
   const { url } = req.query
@@ -32,7 +33,7 @@ app.get('/api/download', async (req, res) => {
     const stream = ytdl(url, {
       filter: 'audioandvideo',
       quality: 'highest',
-      requestOptions,
+      agent,
     })
 
     stream.pipe(res)
