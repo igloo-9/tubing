@@ -1,16 +1,12 @@
 const express = require('express')
 const ytdl = require('@distube/ytdl-core')
 const fs = require('fs')
-const path = require('path')
 const cors = require('cors')
 
 const app = express()
 app.use(cors())
 
-// ensure the correct path to cookies.json
-const cookiesPath = path.join(__dirname, 'cookies.json')
-console.log('cookiesPath:', cookiesPath)
-const agent = ytdl.createAgent(fs.readFileSync(cookiesPath, 'utf8'))
+const agent = ytdl.createAgent(fs.readFileSync('/api/cookies.json'))
 console.log('agent:', agent)
 
 app.get('/api/download', async (req, res) => {
