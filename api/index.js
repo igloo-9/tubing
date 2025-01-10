@@ -15,8 +15,6 @@ const requestOptions = {
   },
 }
 
-const agent = ytdl.createAgent(cookies, agentOptions)
-
 app.get('/api/download', async (req, res) => {
   const { url } = req.query
 
