@@ -1,20 +1,12 @@
 const express = require('express')
 const ytdl = require('@distube/ytdl-core')
+const fs = require('fs')
 const cors = require('cors')
 
 const app = express()
 app.use(cors())
 
-const cookies = [
-  { name: 'PREF', value: 'f6' },
-  { name: 'SID', value: 'g.a000sAioIXuBomZjf' },
-  { name: 'SIDCC', value: 'AKEyXzWKM_IQpINjjQHX6ba8jWDW0Wcl8li' },
-  { name: 'APISID', value: 'PtyoBIwmZs-' },
-  { name: 'SAPISID', value: 'zAldbjtfuiL5L5_2/Av_i' },
-  { name: 'LOGIN_INFO', value: 'zAldbjtfuiL5L5_2/Av_i' },
-]
-
-const agent = ytdl.createAgent(cookies, {})
+const agent = ytdl.createAgent(JSON.parse(fs.readFileSync('cookies.json')))
 
 app.get('/api/download', async (req, res) => {
   const { url } = req.query
